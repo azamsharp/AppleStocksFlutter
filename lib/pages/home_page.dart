@@ -1,8 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:stocks_app_flutter/models/stock.dart';
+import 'package:provider/provider.dart';
+import 'package:stocks_app_flutter/view_models/stock_list_view_model.dart';
 import 'package:stocks_app_flutter/widgets/stock_list.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override 
+  _HomePageState createState() => _HomePageState(); 
+}
+
+class _HomePageState extends State<HomePage> {
+
+  StockListViewModel _vm; 
+
+  @override
+  void initState() {
+    super.initState();
+    _vm = Provider.of<StockListViewModel>(context, listen: false);
+    _vm.fetchStocks(); 
+  }
+
+  void _filterStocks(String searchTerm) {
+    _vm.search(searchTerm);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,6 +50,8 @@ class HomePage extends StatelessWidget {
                     child: SizedBox(
                         height: 50,
                         child: TextField(
+                          onChanged: _filterStocks,
+                          style: TextStyle(color: Colors.white),
                           decoration: InputDecoration(
                               hintStyle: TextStyle(color: Colors.grey[500]),
                               hintText: "Search",
@@ -45,7 +67,12 @@ class HomePage extends StatelessWidget {
                   ), 
                   SizedBox(
                     height: MediaQuery.of(context).size.height - 310,
-                    child: StockList(stocks: Stock.getAll())
+                    child: 
+                    Consumer<StockListViewModel>(
+                      builder: (_, vm, __) {
+                        return StockList(stocks: vm.stocks);
+                      }
+                    )
                     )
                 ]),
           ))

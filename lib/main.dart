@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:stocks_app_flutter/pages/home_page.dart';
+import 'package:stocks_app_flutter/view_models/stock_list_view_model.dart';
 
 
 void main() => runApp(App());
@@ -11,7 +13,11 @@ class App extends StatelessWidget {
 
     return MaterialApp(
       title: "Stocks", 
-      home: HomePage()
+      home: 
+      ChangeNotifierProvider(
+        create: (_) => StockListViewModel(), 
+        child: HomePage()
+      )
     );
     
   }

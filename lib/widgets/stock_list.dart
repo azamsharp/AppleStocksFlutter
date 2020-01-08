@@ -1,10 +1,10 @@
 
 import 'package:flutter/material.dart';
-import 'package:stocks_app_flutter/models/stock.dart';
+import 'package:stocks_app_flutter/view_models/stock_list_view_model.dart';
 
 class StockList extends StatelessWidget {
 
-  final List<Stock> stocks; 
+  final List<StockViewModel> stocks; 
 
   StockList({this.stocks});
 

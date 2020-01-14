@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:stocks_app_flutter/view_models/stock_list_view_model.dart';
+import 'package:stocks_app_flutter/view_models/home_page_view_model.dart';
 
 class StockList extends StatelessWidget {
 

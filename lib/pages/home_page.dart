@@ -1,30 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:stocks_app_flutter/view_models/stock_list_view_model.dart';
+import 'package:stocks_app_flutter/view_models/home_page_view_model.dart';
+import 'package:stocks_app_flutter/widgets/news_list.dart';
 import 'package:stocks_app_flutter/widgets/stock_list.dart';
 
 class HomePage extends StatefulWidget {
-  @override 
-  _HomePageState createState() => _HomePageState(); 
+  @override
+  _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
 
-  StockListViewModel _vm; 
+  bool _expanded = false; 
 
   @override
   void initState() {
     super.initState();
-    _vm = Provider.of<StockListViewModel>(context, listen: false);
-    _vm.fetchStocks(); 
+    Provider.of<HomePageViewModel>(context, listen: false).load();
   }
 
   void _filterStocks(String searchTerm) {
-    _vm.search(searchTerm);
+    Provider.of<HomePageViewModel>(context).search(searchTerm);
   }
 
   @override
   Widget build(BuildContext context) {
+    final vm = Provider.of<HomePageViewModel>(context);
+
     return Scaffold(
         body: Stack(children: <Widget>[
       Container(
@@ -64,18 +66,39 @@ class _HomePageState extends State<HomePage> {
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(16)))),
                         )),
-                  ), 
+                  ),
                   SizedBox(
-                    height: MediaQuery.of(context).size.height - 310,
-                    child: 
-                    Consumer<StockListViewModel>(
-                      builder: (_, vm, __) {
-                        return StockList(stocks: vm.stocks);
-                      }
-                    )
-                    )
+                      height: MediaQuery.of(context).size.height - 310,
+                      child: StockList(stocks: vm.stocks))
                 ]),
-          ))
+          )),
+      Positioned(
+        bottom: 0,
+        child: AnimatedContainer(
+          height: _expanded ? 800 : 210,
+          duration: Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+          child: NewsList(
+              articles: vm.newsArticles,
+              onHeaderTapped: () {
+                setState(() {
+                   _expanded = !_expanded; 
+                });
+              },
+              onDragUpdate: (details) {
+
+              if(details.primaryDelta < 0) {
+                setState(() {
+                  _expanded = true;  
+                });
+              } else {
+                setState(() {
+                  _expanded = false; 
+                });
+              }
+             }),
+        ),
+      )
     ]));
   }
 }
